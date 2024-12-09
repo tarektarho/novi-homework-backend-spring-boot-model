@@ -16,7 +16,7 @@ import org.springframework.http.HttpStatus;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/televisions")
+@RequestMapping("/api/v1/televisions")
 public class TelevisionsController {
 
     private final TelevisionService televisionService;
