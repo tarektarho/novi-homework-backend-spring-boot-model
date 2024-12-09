@@ -1,21 +1,13 @@
-package nl.novi.techiteasy.models;
+package nl.novi.techiteasy.dtos;
 
-import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-import java.time.Year;
 import java.util.Date;
 
-@Entity
-@Table(name = "televisions")
-public class Television {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class TelevisionCreateDTO {
 
     @NotBlank(message = "Type cannot be empty")
     private String type;
@@ -46,39 +38,7 @@ public class Television {
     private String boughtAt;
     private final Date createdAt = new Date();
 
-
-    public Television() {
-    }
-
-    public Television(String type, String brand, String name, Double price, Double availableSize, int refreshRate, String screenType, String screenQuality, boolean smartTv, boolean wifi, boolean voiceControl, boolean hdr, boolean bluetooth, boolean ambiLight, int originalStock, int sold, String soldAt, String boughtAt) {
-        this.type = type;
-        this.brand = brand;
-        this.name = name;
-        this.price = price;
-        this.availableSize = availableSize;
-        this.refreshRate = refreshRate;
-        this.screenType = screenType;
-        this.screenQuality = screenQuality;
-        this.smartTv = smartTv;
-        this.wifi = wifi;
-        this.voiceControl = voiceControl;
-        this.hdr = hdr;
-        this.bluetooth = bluetooth;
-        this.ambiLight = ambiLight;
-        this.originalStock = originalStock;
-        this.sold = sold;
-        this.soldAt = soldAt;
-        this.boughtAt = boughtAt;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
+    // Getters and Setters
     public String getType() {
         return type;
     }
@@ -227,13 +187,5 @@ public class Television {
         return createdAt;
     }
 
-    public int getAge() {
-
-        if (boughtAt != null) {
-            return Year.now().getValue() - Integer.parseInt(boughtAt);
-        } else {
-            return 0;
-        }
-    }
 
 }
