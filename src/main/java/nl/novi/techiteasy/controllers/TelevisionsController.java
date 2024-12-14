@@ -4,14 +4,9 @@ import jakarta.validation.Valid;
 import nl.novi.techiteasy.dtos.TelevisionCreateDTO;
 import nl.novi.techiteasy.dtos.TelevisionResponseDTO;
 import nl.novi.techiteasy.exceptions.RecordNotFoundException;
-import nl.novi.techiteasy.exceptions.TelevisionNameTooLongException;
-import nl.novi.techiteasy.mappers.TelevisionMapper;
-import nl.novi.techiteasy.models.Television;
 import nl.novi.techiteasy.services.TelevisionService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
@@ -26,52 +21,51 @@ public class TelevisionsController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createTelevision(@Valid @RequestBody TelevisionCreateDTO televisionCreateDTO, BindingResult result) {
-
-        if (result.hasErrors()) {
-            return ResponseEntity.badRequest().body(result.getAllErrors());
-        }
-
-        if (televisionCreateDTO.getName().length() > 30) {
-            throw new TelevisionNameTooLongException("The name of the television is too long");
-        }
-
-        Television savedTelevision = TelevisionMapper.toEntity(televisionCreateDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(TelevisionMapper.toResponseDTO(televisionService.save(savedTelevision)));
+    public ResponseEntity<Object> createTelevision(@Valid @RequestBody TelevisionCreateDTO televisionCreateDTO) {
+        TelevisionResponseDTO responseDTO = televisionService.createTelevision(televisionCreateDTO);
+        return ResponseEntity.status(201).body(responseDTO);
     }
 
     @GetMapping
-    public ResponseEntity<Iterable<TelevisionResponseDTO>> getTelevisions(@RequestParam(required = false) String brand, @RequestParam(required = false) String name, @RequestParam(required = false) String type, @RequestParam(required = false) Double price, @RequestParam(required = false) Double availableSize, @RequestParam(required = false) String screenType, @RequestParam(required = false) String screenQuality, @RequestParam(required = false) boolean smartTv, @RequestParam(required = false) boolean wifi, @RequestParam(required = false) boolean voiceControl, @RequestParam(required = false) boolean hdr, @RequestParam(required = false) boolean bluetooth, @RequestParam(required = false) boolean ambiLight, @RequestParam(required = false) String soldAt, @RequestParam(required = false) String boughtAt) {
-        List<Television> televisions = televisionService.getTelevisions(brand, name, type, price, availableSize, screenType, screenQuality, smartTv, wifi, voiceControl, hdr, bluetooth, ambiLight, soldAt, boughtAt);
-        return ResponseEntity.ok(TelevisionMapper.toResponseDTOList(televisions));
+    public ResponseEntity<List<TelevisionResponseDTO>> getTelevisions(
+            @RequestParam(required = false) String brand,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) Double price,
+            @RequestParam(required = false) Double availableSize,
+            @RequestParam(required = false) String screenType,
+            @RequestParam(required = false) String screenQuality,
+            @RequestParam(required = false) Boolean smartTv,
+            @RequestParam(required = false) Boolean wifi,
+            @RequestParam(required = false) Boolean voiceControl,
+            @RequestParam(required = false) Boolean hdr,
+            @RequestParam(required = false) Boolean bluetooth,
+            @RequestParam(required = false) Boolean ambiLight,
+            @RequestParam(required = false) Integer originalStock,
+            @RequestParam(required = false) Integer sold,
+            @RequestParam(required = false) String soldAt,
+            @RequestParam(required = false) String boughtAt) {
+
+        List<TelevisionResponseDTO> televisions = televisionService.getTelevisionsWithFilters(
+                brand, name, type, price, availableSize, screenType, screenQuality,
+                smartTv, wifi, voiceControl, hdr, bluetooth, ambiLight,
+                originalStock, sold, soldAt, boughtAt);
+
+        return ResponseEntity.ok(televisions);
     }
 
+
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateTelevision(@Valid @PathVariable Long id, @RequestBody TelevisionCreateDTO televisionCreateDTO, BindingResult result) {
-
-        if (result.hasErrors()) {
-            return ResponseEntity.badRequest().body(result.getAllErrors());
-        }
-
-        Television existingTelevision = televisionService.getTelevisionById(id)
-                .orElseThrow(() -> new RecordNotFoundException("No television record exists for the given ID."));
-
-        // Map and save the updated entity
-        Television updatedTelevision = TelevisionMapper.toEntity(televisionCreateDTO);
-        updatedTelevision.setId(existingTelevision.getId());
-        Television savedTelevision = televisionService.save(updatedTelevision);
-
-        TelevisionResponseDTO responseDTO = TelevisionMapper.toResponseDTO(savedTelevision);
+    public ResponseEntity<Object> updateTelevision(
+            @PathVariable Long id,
+            @Valid @RequestBody TelevisionCreateDTO televisionCreateDTO) {
+        TelevisionResponseDTO responseDTO = televisionService.updateTelevision(id, televisionCreateDTO);
         return ResponseEntity.ok(responseDTO);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteTelevision(@PathVariable Long id) {
-        var deleted = televisionService.deleteTelevisionById(id);
-        if (deleted) {
-            return ResponseEntity.noContent().build();
-        } else {
-            throw new RecordNotFoundException("No television record exists for the given ID.");
-        }
+    public ResponseEntity<Void> deleteTelevision(@PathVariable Long id) {
+        televisionService.deleteTelevision(id);
+        return ResponseEntity.noContent().build();
     }
 }
