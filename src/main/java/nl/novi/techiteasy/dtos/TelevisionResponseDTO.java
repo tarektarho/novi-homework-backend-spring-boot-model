@@ -1,34 +1,13 @@
-package nl.novi.techiteasy.models;
+package nl.novi.techiteasy.dtos;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-
-import java.time.Year;
-import java.util.Date;
-
-@Entity
-@Table(name = "televisions")
-public class Television {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class TelevisionResponseDTO {
     private Long id;
-
-    @NotBlank(message = "Type cannot be empty")
-    private String type;
-
-    @NotBlank(message = "Brand cannot be empty")
-    private String brand;
-
-    @NotBlank(message = "Name cannot be empty")
     private String name;
+    private String brand;
+    private String type;
+    private int year;
+    private int age;
 
-    @NotNull(message = "Price cannot be null")
-    @Min(value = 0, message = "Price must be greater than 0")
-    @Max(value = 10000, message = "Price must be less than 10000")
     private Double price;
     private Double availableSize;
     private int refreshRate = 0;
@@ -37,6 +16,8 @@ public class Television {
     private boolean smartTv = false;
     private boolean wifi = false;
     private boolean voiceControl = false;
+
+
     private boolean hdr = false;
     private boolean bluetooth = false;
     private boolean ambiLight = false;
@@ -44,31 +25,17 @@ public class Television {
     private int sold = 0;
     private String soldAt;
     private String boughtAt;
-    private final Date createdAt = new Date();
 
-
-    public Television() {
+    public boolean isHdr() {
+        return hdr;
     }
 
-    public Television(String type, String brand, String name, Double price, Double availableSize, int refreshRate, String screenType, String screenQuality, boolean smartTv, boolean wifi, boolean voiceControl, boolean hdr, boolean bluetooth, boolean ambiLight, int originalStock, int sold, String soldAt, String boughtAt) {
-        this.type = type;
-        this.brand = brand;
-        this.name = name;
-        this.price = price;
-        this.availableSize = availableSize;
-        this.refreshRate = refreshRate;
-        this.screenType = screenType;
-        this.screenQuality = screenQuality;
-        this.smartTv = smartTv;
-        this.wifi = wifi;
-        this.voiceControl = voiceControl;
+    public void setHdr(boolean hdr) {
         this.hdr = hdr;
-        this.bluetooth = bluetooth;
-        this.ambiLight = ambiLight;
-        this.originalStock = originalStock;
-        this.sold = sold;
-        this.soldAt = soldAt;
-        this.boughtAt = boughtAt;
+    }
+
+    public int getAge() {
+        return java.time.Year.now().getValue() - year;
     }
 
     public Long getId() {
@@ -79,14 +46,6 @@ public class Television {
         this.id = id;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
     public String getBrand() {
         return brand;
     }
@@ -95,12 +54,20 @@ public class Television {
         this.brand = brand;
     }
 
-    public String getName() {
-        return name;
+    public String getType() {
+        return type;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
     }
 
     public Double getPrice() {
@@ -167,14 +134,6 @@ public class Television {
         this.voiceControl = voiceControl;
     }
 
-    public boolean isHdr() {
-        return hdr;
-    }
-
-    public void setHdr(boolean hdr) {
-        this.hdr = hdr;
-    }
-
     public boolean isBluetooth() {
         return bluetooth;
     }
@@ -223,17 +182,11 @@ public class Television {
         this.boughtAt = boughtAt;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
+    public String getName() {
+        return name;
     }
 
-    public int getAge() {
-
-        if (boughtAt != null) {
-            return Year.now().getValue() - Integer.parseInt(boughtAt);
-        } else {
-            return 0;
-        }
+    public void setName(String name) {
+        this.name = name;
     }
-
 }

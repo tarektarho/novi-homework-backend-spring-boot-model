@@ -40,8 +40,8 @@ public interface TelevisionRepository extends JpaRepository<Television, Long> {
 
     List<Television> findBySold(int sold);
 
-    List<Television> findBySoldDate(String soldDate);
+    List<Television> findBySoldAt(String soldAt);
 
-    List<Television> findByBoughtDate(String boughtDate);
+    List<Television> findByBoughtAt(String boughtAt);
 
 }
